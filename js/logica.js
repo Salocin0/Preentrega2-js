@@ -1,5 +1,9 @@
 //productos cargados por defecto
-const productos = [{id:1, nombre:"producto 1",precio: 250},{id:2, nombre:"producto 2",precio: 500},{id:3, nombre:"producto 3",precio: 750}];
+const productos = [
+  { id: 1, nombre: "producto 1", precio: 250 },
+  { id: 2, nombre: "producto 2", precio: 500 },
+  { id: 3, nombre: "producto 3", precio: 750 },
+];
 const carrito = [];
 //esta funcion agrega un producto nuevo al array de productos
 function agregarProductosATienda() {
@@ -11,7 +15,7 @@ function agregarProductosATienda() {
 
     if (!isNaN(precio)) {
       productos.push({
-        id: productos.length+1,
+        id: productos.length + 1,
         nombre: nombre,
         precio: precio,
       });
@@ -29,9 +33,7 @@ function agregarProductosACarrito() {
   while (prodAAgregar != "0") {
     let textProductos = "";
     for (const producto of productos) {
-      textProductos += `codigo:${producto.id} producto: ${
-        producto.nombre
-      } precio:${producto.precio}\n`;
+      textProductos += `codigo:${producto.id} producto: ${producto.nombre} precio:${producto.precio}\n`;
     }
     prodAAgregar = prompt(
       textProductos +
@@ -74,17 +76,133 @@ function verCarrito() {
   let cart = "Productos en el carrito:\n";
 
   for (const producto of carrito) {
-    cart += `num:${producto.id+1} producto: ${producto.nombre} precio:${producto.precio}\n`;
+    cart += `num:${producto.id + 1} producto: ${producto.nombre} precio:${
+      producto.precio
+    }\n`;
   }
 
   alert(cart);
 }
 
+// Función para buscar un producto por nombre en la tienda
+// Función para buscar productos por nombre (similitud) en la tienda
+function buscarPorNombre() {
+  let continuarBuscando = true;
+
+  while (continuarBuscando) {
+    const nombreBuscado = prompt("Ingrese parte del nombre del producto a buscar:");
+    const productosEncontrados = [];
+
+    for (const producto of productos) {
+      if (producto.nombre.toLowerCase().includes(nombreBuscado.toLowerCase())) {
+        productosEncontrados.push(producto);
+      }
+    }
+
+    if (productosEncontrados.length > 0) {
+      let resultado = "Productos encontrados:\n";
+      for (const producto of productosEncontrados) {
+        resultado += `Codigo: ${producto.id} Producto: ${producto.nombre} Precio: $${producto.precio}\n`;
+      }
+      alert(resultado);
+    } else {
+      alert("No se encontraron productos.");
+
+      const seguirBuscando = prompt("¿Quiere buscar otro producto? (1 para sí, 0 para no)");
+      if (seguirBuscando !== "1") {
+        continuarBuscando = false;
+      }
+    }
+
+    const continuarOpcion = prompt("¿Quiere seguir buscando productos por nombre? (1 para sí, 0 para no)");
+    if (continuarOpcion !== "1") {
+      continuarBuscando = false;
+    }
+  }
+}
+
+// Función para buscar productos con precio menor a un valor dado
+function buscarPorPrecioMenor() {
+  const precioMaximo = parseFloat(prompt("Ingrese el precio máximo:"));
+  const productosEncontrados = [];
+
+  if (!isNaN(precioMaximo)) {
+    for (const producto of productos) {
+      if (producto.precio <= precioMaximo) {
+        productosEncontrados.push(producto);
+      }
+    }
+
+    if (productosEncontrados.length > 0) {
+      let resultado = "Productos encontrados:\n";
+      for (const producto of productosEncontrados) {
+        resultado += `Codigo: ${producto.id} Producto: ${producto.nombre} Precio: $${producto.precio}\n`;
+      }
+      alert(resultado);
+    } else {
+      alert("No se encontraron productos con precio menor a " + precioMaximo);
+    }
+  } else {
+    alert("Precio máximo no válido.");
+  }
+}
+
+// Función para buscar productos con precio mayor a un valor dado
+function buscarPorPrecioMayor() {
+  const precioMinimo = parseFloat(prompt("Ingrese el precio mínimo:"));
+  const productosEncontrados = [];
+
+  if (!isNaN(precioMinimo)) {
+    for (const producto of productos) {
+      if (producto.precio >= precioMinimo) {
+        productosEncontrados.push(producto);
+      }
+    }
+
+    if (productosEncontrados.length > 0) {
+      let resultado = "Productos encontrados:\n";
+      for (const producto of productosEncontrados) {
+        resultado += `Codigo: ${producto.id} Producto: ${producto.nombre} Precio: $${producto.precio}\n`;
+      }
+      alert(resultado);
+    } else {
+      alert("No se encontraron productos con precio mayor a " + precioMinimo);
+    }
+  } else {
+    alert("Precio mínimo no válido.");
+  }
+}
+
+// Función para aplicar un aumento a todos los productos en la tienda
+function aplicarAumento() {
+  const aumentoPorcentaje = parseFloat(
+    prompt("Ingrese el porcentaje de aumento:")
+  );
+
+  if (!isNaN(aumentoPorcentaje)) {
+    for (const producto of productos) {
+      producto.precio += (producto.precio * aumentoPorcentaje) / 100;
+    }
+    alert("Aumento aplicado a todos los productos en la tienda.");
+  } else {
+    alert("Porcentaje de aumento no válido.");
+  }
+}
+
 let accion = "";
 //bucle del menu principal
-while (accion != "5") {
+while (accion != "9") {
   accion = prompt(
-    "¿Qué desea hacer?\n1 => Agregar productos a la tienda\n2 => Agregar productos al carrito\n3 => Comprar productos en el carrito\n4 => Ver carrito\n5 => Salir"
+    `¿Qué desea hacer?
+     1 => Agregar productos a la tienda
+     2 => Agregar productos al carrito
+     3 => Comprar productos en el carrito
+     4 => Ver carrito
+     5 => Buscar producto por nombre
+     6 => Buscar productos con precio menor a...
+     7 => Buscar productos con precio mayor a...
+     8 => Aplicar aumento a productos
+     9 => Salir`
   );
   switch (accion) {
     case "1":
@@ -100,6 +218,18 @@ while (accion != "5") {
       verCarrito();
       break;
     case "5":
+      buscarPorNombre();
+      break;
+    case "6":
+      buscarPorPrecioMenor();
+      break;
+    case "7":
+      buscarPorPrecioMayor();
+      break;
+    case "8":
+      aplicarAumento();
+      break;
+    case "9":
       alert("Gracias por su compra");
       break;
     default:
